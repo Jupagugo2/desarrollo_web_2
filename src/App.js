@@ -1,32 +1,19 @@
-import React, { Component } from 'react';
-import './App.css';
+import React, { useEffect } from "react";
+import { app } from "./fb";
+import Home from "./Home";
+import Logueo from "./Logueo";
 
 
 function App() {
-  return (
-  <div>
-  <form onSubmit={presion}>
-  <p>Ingrese primer valor:
-  <input type="number" name="valor1" />
-  </p>
-  <p>Ingrese segundo valor:
-  <input type="number" name="valor2" />
-  </p>
-  <p>
-  <input type="submit" value="Sumar" />
-  </p>
-  </form>
-  </div>
-  );
-  }
-  
-  function presion(e) {
-  e.preventDefault();
-  const v1=parseInt(e.target.valor1.value,10);
-  const v2=parseInt(e.target.valor2.value,10);
-  const suma=v1+v2;
-  alert('La suma es:'+suma);
-  }
-  
-  export default App;
-  
+  const [usuario, setUsuario] = React.useState(null);
+  useEffect(() => {
+    app.auth().onAuthStateChanged((usuarioFirebase) => {
+      console.log("ya tienes sesión iniciada con:", usuarioFirebase);
+      setUsuario(usuarioFirebase);
+    });
+  }, []);
+
+  return <>{usuario ? <Home /> : <Logueo setUsuario={setUsuario} />}</>;
+}
+
+export default App;
